@@ -62,30 +62,66 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+% Part 1: cost function with regularization
+X = [ones(m, 1) X];
+a1 = X;
 
+z2 = a1 * Theta1';
+a2 = sigmoid(z2);
 
+a2 = [ones(m, 1) a2];
+z3 = a2 * Theta2';
+a3 = sigmoid(z3);
 
+yd = eye(num_labels);
+y = yd(y,:);
 
+% Cost function only use the last computed layer which is a3 in ths case.
+logis = ((-y).*log(a3) - (1 - y).*log(1-a3));
+% Cost fucntion without regularization
+J = ((1/m).*sum(sum(logis)));
 
+% Regularization term
 
+regTheta1 = Theta1(:, 2:size(Theta1, 2));
+regTheta2 = Theta2(:, 2:size(Theta2, 2));
+costReg = (lambda/(2 * m)) * (sum(sum(power(regTheta1, 2))) ...
+            + sum(sum(power(regTheta2, 2))));
+% Cost fucntion with regularization term
+J = J + costReg;
 
+% -------------------------------------------------------------
+% Part 2: backpropagation
 
+D3 = a3 - y;
+D2 = D3 * Theta2; 
 
+z2=[ones(m,1) z2];
+D2=D3*Theta2.*sigmoidGradient(z2);
 
+% Remove bias term
+D2=D2(:,2:end);
 
-
-
-
-
-
+Theta1_grad = (D2'*a1)./m; % Same size as Theta1_grad (25x401)
+Theta2_grad = (D3'*a2)./m;% Same size as Theta2_grad (10x26)
 
 
 % -------------------------------------------------------------
+% Part 3: Implement regularization with the cost function and gradients.
 
+cof = lambda/m;
+regGrad1 = Theta1 .* cof;
+regGrad2 = Theta2 .* cof;
+regGrad1(:,1) = 0; % Not regularize bias term
+regGrad2(:,1) = 0; % Not regularize bias term
+
+Theta1_grad = Theta1_grad + regGrad1;
+Theta2_grad = Theta2_grad + regGrad2;
+% whos
 % =========================================================================
 
 % Unroll gradients
 grad = [Theta1_grad(:) ; Theta2_grad(:)];
 
-
+% whos
 end

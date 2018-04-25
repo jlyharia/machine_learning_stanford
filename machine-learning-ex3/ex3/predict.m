@@ -22,10 +22,17 @@ p = zeros(size(X, 1), 1);
 %
 
 
+a1 = [ones(size(X,1), 1) X];
+
+a1_out = sigmoid(a1 * Theta1');
+
+a2 = [ones(size(a1_out,1), 1) a1_out];
 
 
-
-
+a3 = sigmoid(a2 * Theta2');
+[p_max, i_max]=max(a3, [], 2);
+p = i_max;
+% whos
 
 
 

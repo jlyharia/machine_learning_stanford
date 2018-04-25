@@ -37,14 +37,21 @@ grad = zeros(size(theta));
 %
 
 
+hx = sigmoid(X * theta);
+unRegGrad = (1/m) * X' * (hx - y);
+UnRegCost = (1/m)* (-y'*log(hx) - (1-y)'*log(1-hx));
+
+
+regGrad = [0; (lambda/m) * theta(2:end)];
+regCost = (lambda/(2 * m)) * theta(2:end)' * theta(2:end);
+
+J = UnRegCost + regCost;
+grad = unRegGrad + regGrad;
 
 
 
 
-
-
-
-
+% whos
 % =============================================================
 
 grad = grad(:);
